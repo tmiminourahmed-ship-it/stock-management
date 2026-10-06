@@ -1,7 +1,19 @@
 import axios from 'axios';
 
+const resolveBaseURL = () => {
+  const url = import.meta.env.VITE_API_URL;
+  if (!url) {
+    if (import.meta.env.PROD) {
+      console.error('[StockFlow] ⚠️ VITE_API_URL is not defined in production! API calls will fail.');
+    }
+    return '/api';
+  }
+  // Strip trailing slash to avoid double-slash in URLs like /api//products
+  return url.replace(/\/+$/, '');
+};
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: resolveBaseURL(),
   headers: { 'Content-Type': 'application/json' },
   timeout: 10000,
 });
